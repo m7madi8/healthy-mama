@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>كيف تهيئين جسدك للحمل — نوال عمر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="site-nav" role="navigation" aria-label="القائمة الرئيسية" id="site-nav">
+    <input type="checkbox" id="nav-open" class="nav-checkbox" aria-hidden="true" hidden />
+    <div class="nav-inner">
+      <label for="nav-open" class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></label>
+      <a href="index.html" class="nav-logo">نوال عمر</a>
+      <ul class="nav-links" id="nav-menu" role="list">
+        <li><a href="index.html#about">من أنا</a></li>
+        <li><a href="index.html#quiz-section">الاستبيانات</a></li>
+        <li><a href="index.html#quiz-results">النتائج والكتب</a></li>
+        <li><a href="index.html#contact">التواصل</a></li>
+      </ul>
+      <label for="nav-open" class="nav-menu-btn" id="nav-menu-btn" aria-label="فتح القائمة">
+        <span class="menu-trigger" aria-hidden="true">
+          <span class="menu-trigger-bar top"></span>
+          <span class="menu-trigger-bar middle"></span>
+          <span class="menu-trigger-bar bottom"></span>
+        </span>
+        <span class="close-trigger" aria-hidden="true">
+          <span class="close-trigger-bar left"></span>
+          <span class="close-trigger-bar right"></span>
+        </span>
+      </label>
+    </div>
+  </nav>
+
+  <main class="book-page" id="main">
+    <div class="book-page-inner">
+      <a href="index.html#quiz-results" class="book-page-back">← العودة للكتب</a>
+      <div class="book-page-grid">
+        <div class="book-page-cover-wrap">
+          <div class="book-page-cover">
+            <img src="2.png" alt="غلاف الكتاب" width="400" height="280" />
+          </div>
+        </div>
+        <div class="book-page-content">
+          <h1 class="book-page-title">كيف تهيئين جسدك للحمل: دليل علمي قبل بداية الرحلة</h1>
+          <p class="book-page-desc">الفحوصات الضرورية قبل الحمل، التغذية المثالية، الفيتامينات الأساسية، تصحيح نمط الحياة، تقوية قاع الحوض، والاستعداد النفسي للأمومة.</p>
+          <p class="book-page-meta">دليل عملي · إلكتروني · 49 ₪</p>
+          <div class="book-payment-wrap" data-book-id="book-prep" data-book-title="تهيئة الجسد للحمل — نوال عمر" data-amount="49">
+            <p class="book-payment-text">الدفع آمن عبر الباي بال أو فيزا/ماستركارد</p>
+            <div id="paypal-form-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">نوال عمر</a>
+        <p class="footer-tagline">مساحة آمنة لصحة المرأة والحمل وما بعد الولادة</p>
+      </div>
+      <nav class="footer-nav" aria-label="روابط التذييل">
+        <ul class="footer-links" role="list">
+          <li><a href="index.html#about">من أنا</a></li>
+          <li><a href="index.html#quiz-section">الاستبيانات</a></li>
+          <li><a href="index.html#quiz-results">النتائج والكتب</a></li>
+          <li><a href="index.html#contact">التواصل</a></li>
+        </ul>
+      </nav>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; <span id="footer-year"></span> نوال عمر. جميع الحقوق محفوظة.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="env.js"></script>
+  <script src="payment-config.js"></script>
+  <script src="payment.js"></script>
+  <script src="script.js"></script>
+  <script>document.getElementById("footer-year") && (document.getElementById("footer-year").textContent = new Date().getFullYear());</script>
+</body>
+</html>

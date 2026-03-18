@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم — إدارة الكتب والمبيعات | نوال عمر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+  <div id="admin-dashboard" class="admin-dashboard">
+    <aside class="admin-sidebar" aria-label="القائمة الجانبية">
+      <div class="admin-sidebar-brand">
+        <span class="admin-sidebar-logo">نوال عمر</span>
+        <span class="admin-sidebar-sub">لوحة التحكم</span>
+      </div>
+      <nav class="admin-sidebar-nav" aria-label="القائمة">
+        <button type="button" class="admin-nav-btn active" data-panel="books">
+          <span class="admin-nav-icon" aria-hidden="true">📚</span>
+          <span>الكتب</span>
+        </button>
+        <button type="button" class="admin-nav-btn" data-panel="sales">
+          <span class="admin-nav-icon" aria-hidden="true">📊</span>
+          <span>المبيعات</span>
+        </button>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <a href="index.html" class="admin-sidebar-link">← العودة للموقع</a>
+        <button type="button" id="admin-logout" class="admin-btn admin-btn-ghost admin-btn-block">خروج</button>
+      </div>
+    </aside>
+
+    <div class="admin-content">
+      <header class="admin-header">
+        <h1 class="admin-page-title" id="admin-page-title">الكتب وعمليات الشراء</h1>
+      </header>
+
+    <main class="admin-main">
+      <section id="panel-books" class="admin-panel active" aria-labelledby="books-heading">
+        <h2 id="books-heading" class="admin-panel-title">الكتب وعمليات الشراء</h2>
+        <div class="admin-cards admin-cards--books">
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">عدد الكتب</span>
+            <span id="admin-books-count" class="admin-stat-value">0</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">إجمالي عمليات الشراء</span>
+            <span id="admin-total-purchases" class="admin-stat-value">0</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">إجمالي الإيرادات (₪)</span>
+            <span id="admin-total-revenue" class="admin-stat-value">0</span>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-table--books" role="grid">
+            <thead>
+              <tr>
+                <th>الكتاب</th>
+                <th>السعر (₪)</th>
+                <th>عدد عمليات الشراء</th>
+                <th>الإيراد (₪)</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="admin-books-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="panel-sales" class="admin-panel" aria-labelledby="sales-heading" hidden>
+        <h2 id="sales-heading" class="admin-panel-title">المبيعات</h2>
+        <div class="admin-cards">
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">إجمالي المبيعات</span>
+            <span id="admin-total-sales" class="admin-stat-value">0</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">عدد المعاملات</span>
+            <span id="admin-total-count" class="admin-stat-value">0</span>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" role="grid">
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>الكتاب</th>
+                <th>المبلغ (₪)</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody id="admin-sales-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

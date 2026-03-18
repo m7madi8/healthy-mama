@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>الاختبار | نوال عمر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="site-nav" role="navigation" aria-label="القائمة الرئيسية">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">نوال عمر</a>
+      <a href="index.html#quiz-section" class="quiz-page-back">← العودة للاستبيانات</a>
+    </div>
+  </nav>
+
+  <main class="quiz-page-main" id="quiz-page-main">
+    <div class="quiz-page-container">
+      <!-- اختيار النوع (عند عدم وجود type في الرابط) -->
+      <div class="quiz-page-pick" id="quiz-page-pick" hidden>
+        <h1 class="quiz-page-pick-title">اخترِي نوع الاختبار</h1>
+        <p class="quiz-page-pick-intro">اختاري الموضوع الذي يهمك للانتقال لصفحة الاختبار.</p>
+        <div class="quiz-selector">
+          <a href="quiz.html?type=postnatal" class="quiz-type-card">
+            <span class="quiz-type-card-title">هل تمرين بمشاعر صعبة بعد الولادة؟</span>
+            <span class="quiz-type-card-meta">10 أسئلة — مقياس إدنبرة</span>
+            <span class="quiz-type-card-desc">اختبار يساعدك على معرفة إن كنت تعانين من أعراض الاكتئاب بعد الولادة.</span>
+            <span class="quiz-type-card-cta">ابدئي الاختبار</span>
+          </a>
+          <a href="quiz.html?type=prep" class="quiz-type-card">
+            <span class="quiz-type-card-title">هل جسمك مستعد للحمل؟</span>
+            <span class="quiz-type-card-meta">20 سؤالًا</span>
+            <span class="quiz-type-card-desc">اختبار بسيط يساعدك على معرفة مدى استعداد جسمك للحمل الصحي.</span>
+            <span class="quiz-type-card-cta">ابدئي الاختبار</span>
+          </a>
+          <a href="quiz.html?type=pregnancy" class="quiz-type-card">
+            <span class="quiz-type-card-title">هل حملك يسير بشكل صحي؟</span>
+            <span class="quiz-type-card-meta">20 سؤالًا</span>
+            <span class="quiz-type-card-desc">اختبار يساعدك على فهم إشارات جسمك خلال الحمل.</span>
+            <span class="quiz-type-card-cta">ابدئي الاختبار</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- تشغيل الاختبار -->
+      <div class="quiz-run-wrap quiz-page-run" id="quiz-page-run" hidden>
+        <a href="index.html#quiz-section" class="quiz-back-link">← اختيار استبيان آخر</a>
+        <h1 class="quiz-page-title" id="quiz-page-title"></h1>
+        <p class="quiz-intro" id="quiz-page-intro"></p>
+        <div class="quiz-wrap">
+          <div class="quiz-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="تقدم الاستبيان">
+            <div class="quiz-progress-bar" id="quiz-page-progress-bar"></div>
+          </div>
+          <p class="quiz-step-label" id="quiz-page-step-label">السؤال 1 من 10</p>
+          <form class="quiz-form" id="quiz-page-form">
+            <div class="quiz-questions" id="quiz-page-questions"></div>
+            <div class="quiz-actions">
+              <button type="button" class="quiz-btn quiz-btn-prev" id="quiz-page-prev" hidden>السابق</button>
+              <button type="button" class="quiz-btn quiz-btn-next" id="quiz-page-next">التالي</button>
+              <button type="submit" class="quiz-btn quiz-btn-submit" id="quiz-page-submit" hidden>عرض النتائج</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- النتائج: تحليل الحالة + الكتاب الموصى به -->
+      <section class="quiz-page-results" id="quiz-page-results" hidden aria-labelledby="quiz-results-heading">
+        <h2 class="quiz-results-title" id="quiz-results-heading">نتيجة الاختبار</h2>
+        <div class="quiz-page-result-score-wrap" id="quiz-page-result-score-wrap">
+          <p class="quiz-page-result-score" id="quiz-page-result-score"></p>
+          <p class="quiz-page-result-state" id="quiz-page-result-state" aria-live="polite"></p>
+        </div>
+        <div class="quiz-results-message-wrap">
+          <p class="quiz-results-message" id="quiz-page-result-message"></p>
+        </div>
+        <div class="quiz-result-cta-wrap">
+          <a href="#" class="quiz-result-cta" id="quiz-page-result-cta">احصلي على الكتاب</a>
+        </div>
+        <p class="quiz-page-result-book-label">الكتاب الموصى لك:</p>
+        <div class="quiz-page-result-book-card" id="quiz-page-result-book-card">
+          <div class="quiz-book-mockup"><div class="quiz-book-mockup-inner"><img id="quiz-page-result-book-img" src="" alt="" width="400" height="280" /></div></div>
+          <div class="quiz-book-body">
+            <h3 class="quiz-book-title" id="quiz-page-result-book-title"></h3>
+            <a href="#" class="quiz-book-cta" id="quiz-page-result-book-link">احصلي على الكتاب</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="quiz-page.js"></script>
+</body>
+</html>
