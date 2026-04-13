@@ -205,12 +205,25 @@ export const redeemPromoCode = onRequest({ region: "us-central1", cors: true }, 
   }
 });
 
-/** invoker: public يسمح بـ OPTIONS (preflight) من المتصفح؛ المصادقة تبقى عبر Firebase داخل جسم Callable. */
+/**
+ * Callable Gen2 على Cloud Run: preflight يحتاج رؤوس CORS صريحة لنطاق الواجهة.
+ * true لا يكفي أحيانًا؛ نضيف الإنتاج و *.vercel.app والمحلي ونطاقات Firebase Hosting.
+ */
+const ownerCallableCors: Array<string | RegExp> = [
+  "https://healthy-mama.vercel.app",
+  /^https:\/\/[a-zA-Z0-9.-]+\.vercel\.app$/,
+  /^http:\/\/localhost(?::\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(?::\d+)?$/,
+  /^https:\/\/[a-zA-Z0-9.-]+\.firebaseapp\.com$/,
+  /^https:\/\/[a-zA-Z0-9.-]+\.web\.app$/,
+];
+
+/** invoker: public يسمح بـ OPTIONS من المتصفح قبل تنفيذ الدالة. */
 const ownerFnOpts = {
   region: "us-central1" as const,
   timeoutSeconds: 120,
   memory: "512MiB" as const,
-  cors: true,
+  cors: ownerCallableCors,
   invoker: "public" as const,
 };
 
