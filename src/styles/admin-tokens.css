@@ -1,0 +1,37 @@
+/* CSS variables required by admin.css (previously from styles.css :root) */
+:root {
+  --white: #ffffff;
+  --bg-section: #faf8f5;
+  --brown: #2c2a28;
+  --brown-light: #5c5b59;
+  --brown-warm: #a68b65;
+  --text-primary: var(--brown);
+  --text-secondary: var(--brown-light);
+  --text-muted: var(--brown-light);
+  --primary: #6b7b6b;
+  --accent: #a68b65;
+  --border: #e5e2de;
+  --shadow-color: rgba(44, 42, 40, 0.1);
+  --sand: #faf8f5;
+  --sand-dark: #e5e2de;
+  --sage: #6b7b6b;
+  --sage-muted: #a68b65;
+  --cream: #ffffff;
+  --cream-warm: #faf8f5;
+  --white-soft: rgba(255, 255, 255, 0.92);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: #e5e2de;
+  --shadow-soft: 0 4px 24px rgba(44, 42, 40, 0.1);
+  --shadow-medium: 0 8px 40px rgba(44, 42, 40, 0.1);
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-reveal: 0.75s;
+  --font-heading: "Cairo", "Plus Jakarta Sans", sans-serif;
+  --font-body: "Tajawal", "Plus Jakarta Sans", sans-serif;
+  --font-serif: "Cairo", serif;
+  --font-sans: "Tajawal", "Plus Jakarta Sans", sans-serif;
+}

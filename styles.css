@@ -45,7 +45,7 @@
   --font-serif: "Cairo", sans-serif;
   --font-sans: "Tajawal", sans-serif;
   /* خلفية الهيرو — غيّر القيمة لاستخدام صورتك */
-  --hero-bg-image: url("healthymama.jpg");
+  --hero-bg-image: url("/healthymama.jpg");
 }
 
 *,

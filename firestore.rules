@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnUser(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, create, update: if isOwnUser(uid);
+      allow delete: if false;
+
+      match /library/{bookId} {
+        allow read: if isOwnUser(uid);
+        // Client-side free claim (Spark: no Cloud Functions). Shape is fixed so users
+        // cannot pick arbitrary orderIds; note: anyone signed in can still grant
+        // themselves any bookId by writing this shape — use Blaze + Functions for
+        // production-grade enforcement.
+        // purchasedAt: serverTimestamp() يجب أن يطابق request.time عادةً؛ إزالة المطابقة الصارمة
+        // تمنع فشل الكتابة في بعض البيئات/الدمج وتُبقي شكل المستند مقيدًا بـ hasOnly.
+        allow create, update: if isOwnUser(uid)
+          && request.resource.data.bookId == bookId
+          && request.resource.data.status == 'paid'
+          && request.resource.data.orderId == 'free-claim-' + request.auth.uid + '-' + bookId
+          && request.resource.data.keys().hasOnly(['bookId', 'orderId', 'status', 'purchasedAt']);
+        allow delete: if false;
+      }
+    }
+
+    match /books/{bookId} {
+      allow read: if signedIn();
+      allow create, update, delete: if false;
+
+      match /pages/{pageId} {
+        allow read: if signedIn()
+          && exists(/databases/$(database)/documents/users/$(request.auth.uid)/library/$(bookId))
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)/library/$(bookId)).data.status == "paid";
+        allow create, update, delete: if false;
+      }
+    }
+
+    match /orders/{orderId} {
+      allow read, write: if false;
+    }
+  }
+}

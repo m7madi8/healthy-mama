@@ -1,5 +1,6 @@
 # ملف البيئة — لا ترفعه أبداً (يحتوي كلمات سر وإعدادات حقيقية)
 .env
+functions/.env
 
 # الملف المُنشأ من .env — يُولَّد محلياً قبل الرفع
 env.js
@@ -12,3 +13,7 @@ Thumbs.db
 *.log
 .idea
 .vscode
+
+# Node / Vite
+node_modules
+dist
