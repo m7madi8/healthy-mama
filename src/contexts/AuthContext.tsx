@@ -1,13 +1,16 @@
 import { createContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+  browserLocalPersistence,
   getRedirectResult,
   onAuthStateChanged,
+  setPersistence,
   signInWithPopup,
   signInWithRedirect,
   signOut,
   type User,
 } from "firebase/auth";
 import { getAuthErrorMessage, shouldUseRedirectSignIn } from "../lib/authErrors";
+import { preferRedirectSignIn } from "../lib/authSignIn";
 import { auth, firebaseConfigError, googleProvider, isFirebaseConfigured } from "../lib/firebase";
 import { ensureUserProfile, getUserProfile, type UserProfile } from "../lib/firestore";
 
@@ -25,6 +28,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    void setPersistence(auth, browserLocalPersistence).catch((error) => {
+      console.warn("Auth persistence setup failed:", error);
+    });
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -79,6 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signInWithGoogle: async () => {
         if (!isFirebaseConfigured) {
           throw new Error(firebaseConfigError ?? "Firebase config is incomplete.");
+        }
+        if (preferRedirectSignIn()) {
+          await signInWithRedirect(auth, googleProvider);
+          return;
         }
         try {
           await signInWithPopup(auth, googleProvider);

@@ -55,7 +55,8 @@ export function SiteNav({ variant = "full" }: SiteNavProps) {
       setAuthError(null);
       await signInWithGoogle();
     } catch (error) {
-      setAuthError(getAuthErrorMessage(error));
+      const msg = getAuthErrorMessage(error);
+      if (!msg.includes("تحويل")) setAuthError(msg);
     }
   };
 

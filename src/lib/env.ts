@@ -63,3 +63,13 @@ export function getFirebaseConfig() {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
   };
 }
+
+/** عدّاد الزيارات — HTTP مع CORS (بعد نشر recordPageViewHttp). */
+export function getRecordPageViewUrl(): string | undefined {
+  const explicit = import.meta.env.VITE_RECORD_PAGE_VIEW_URL;
+  if (explicit && explicit.trim().length > 0) return explicit.trim();
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+  const region = import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "us-central1";
+  if (!projectId) return undefined;
+  return `https://${region}-${projectId}.cloudfunctions.net/recordPageViewHttp`;
+}

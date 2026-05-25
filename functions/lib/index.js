@@ -188,18 +188,40 @@ const ownerFnOpts = {
     cors: ownerCallableCors,
     invoker: "public",
 };
+async function incrementPageView() {
+    await db.doc("adminStats/summary").set({
+        pageViewsTotal: admin.firestore.FieldValue.increment(1),
+        lastPageViewAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+}
 /** Public lightweight counter for site visits (SPA session ping). */
 export const recordPageView = onCall(ownerFnOpts, async () => {
     try {
-        await db.doc("adminStats/summary").set({
-            pageViewsTotal: admin.firestore.FieldValue.increment(1),
-            lastPageViewAt: admin.firestore.FieldValue.serverTimestamp(),
-        }, { merge: true });
+        await incrementPageView();
         return { ok: true };
     }
     catch (error) {
         logger.error("recordPageView error", error);
         throw new HttpsError("internal", "تعذر تسجيل الزيارة.");
+    }
+});
+/** نفس العداد عبر HTTP + cors:true — يعمل من Vercel بدون مشكلة preflight للـ callable. */
+export const recordPageViewHttp = onRequest({ region: "us-central1", cors: true }, async (req, res) => {
+    if (req.method === "OPTIONS") {
+        res.status(204).send("");
+        return;
+    }
+    if (req.method !== "POST") {
+        res.status(405).json({ ok: false, message: "POST only" });
+        return;
+    }
+    try {
+        await incrementPageView();
+        res.status(200).json({ ok: true });
+    }
+    catch (error) {
+        logger.error("recordPageViewHttp error", error);
+        res.status(500).json({ ok: false });
     }
 });
 /** Aggregated metrics for the store owner (Firestore + Auth). */

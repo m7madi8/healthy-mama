@@ -1,4 +1,5 @@
 import { httpsCallable, type HttpsCallableResult } from "firebase/functions";
+import { getRecordPageViewUrl } from "./env";
 import { getFirebaseFunctions } from "./firebase";
 
 export type OwnerDashboardBookStat = {
@@ -39,15 +40,42 @@ const PV_SESSION_KEY = "hm_pv_recorded";
 
 let pageViewInflight = false;
 
+async function recordPageViewViaHttp(): Promise<boolean> {
+  const url = getRecordPageViewUrl();
+  if (!url) return false;
+  const res = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    headers: { "Content-Type": "application/json" },
+    body: "{}",
+  });
+  return res.ok;
+}
+
+async function recordPageViewViaCallable(): Promise<boolean> {
+  await httpsCallable(getFirebaseFunctions(), "recordPageView")();
+  return true;
+}
+
 /** One increment per browser tab session; safe under React StrictMode (single in-flight guard). */
 export async function recordPageViewOncePerSession(): Promise<void> {
   if (typeof window === "undefined" || sessionStorage.getItem(PV_SESSION_KEY) || pageViewInflight) return;
   pageViewInflight = true;
   try {
-    await httpsCallable(getFirebaseFunctions(), "recordPageView")();
-    sessionStorage.setItem(PV_SESSION_KEY, "1");
-  } catch {
-    /* Functions may be undeployed locally — retry on next navigation */
+    let ok = false;
+    try {
+      ok = await recordPageViewViaHttp();
+    } catch {
+      ok = false;
+    }
+    if (!ok) {
+      try {
+        ok = await recordPageViewViaCallable();
+      } catch {
+        ok = false;
+      }
+    }
+    if (ok) sessionStorage.setItem(PV_SESSION_KEY, "1");
   } finally {
     pageViewInflight = false;
   }
