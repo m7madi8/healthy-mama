@@ -13,6 +13,7 @@ import { LibraryPage } from "./pages/LibraryPage";
 import { QuizPage } from "./pages/QuizPage";
 import { ReaderPage } from "./pages/ReaderPage";
 import { ThankYouPage } from "./pages/ThankYouPage";
+import { BookPreviewPage } from "./pages/BookPreviewPage";
 
 export default function App() {
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function App() {
       <Route element={<PublicLayout />}>
         <Route index element={<HomePage />} />
         <Route path="books/:slug" element={<BookPage />} />
+        {import.meta.env.DEV ? <Route path="preview/:bookId" element={<BookPreviewPage />} /> : null}
         <Route path="thank-you" element={<ThankYouPage />} />
         <Route
           path="dashboard"

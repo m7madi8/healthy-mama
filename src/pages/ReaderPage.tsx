@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { Seo } from "../components/layout/Seo";
 import { BookReader } from "../components/reader/BookReader";
 import { getBookById, isBookId } from "../data/books";
+import { getBookToc } from "../data/book-postnatal-toc";
 import { getBookPages, type ReaderPageChunk } from "../lib/firestore";
 
 export function ReaderPage() {
@@ -44,7 +45,11 @@ export function ReaderPage() {
               العودة للمكتبة
             </Link>
           </div>
-          {loading ? <p className="text-sm text-sage-600">جاري تحميل محتوى الكتاب...</p> : <BookReader pages={pages} />}
+          {loading ? (
+            <p className="text-sm text-sage-600">جاري تحميل محتوى الكتاب...</p>
+          ) : (
+            <BookReader pages={pages} toc={getBookToc(bookId)} bookId={bookId} />
+          )}
         </div>
       </main>
     </>
