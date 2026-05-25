@@ -6,6 +6,7 @@ import { Button } from "../components/ui/PrimaryButton";
 import { ProfileAvatarPlaceholder } from "../components/ui/ProfileAvatarPlaceholder";
 import { BOOKS } from "../data/books";
 import { useAuth } from "../hooks/useAuth";
+import { getAuthErrorMessage } from "../lib/authErrors";
 import { firebaseConfigError, isFirebaseConfigured } from "../lib/firebase";
 import { fetchOwnerDashboard, type OwnerDashboardData } from "../lib/ownerDashboard";
 
@@ -132,8 +133,7 @@ export function AdminPage() {
     try {
       await signInWithGoogle();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "تعذر تسجيل الدخول.";
-      setSignInError(msg);
+      setSignInError(getAuthErrorMessage(e));
     }
   }, [signInWithGoogle]);
 

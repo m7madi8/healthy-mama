@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavScrolled } from "../../hooks/useNavScroll";
 import { useAuth } from "../../hooks/useAuth";
 import { getInstagramUrl, getWhatsappUrl } from "../../lib/env";
+import { getAuthErrorMessage } from "../../lib/authErrors";
 import { firebaseConfigError, isFirebaseConfigured } from "../../lib/firebase";
 import { btnPrimary } from "../ui/PrimaryButton";
 
@@ -54,8 +55,7 @@ export function SiteNav({ variant = "full" }: SiteNavProps) {
       setAuthError(null);
       await signInWithGoogle();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "فشل تسجيل الدخول. تحققي من إعدادات Firebase.";
-      setAuthError(message);
+      setAuthError(getAuthErrorMessage(error));
     }
   };
 

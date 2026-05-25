@@ -1,10 +1,13 @@
 import { createContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+  getRedirectResult,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   type User,
 } from "firebase/auth";
+import { getAuthErrorMessage, shouldUseRedirectSignIn } from "../lib/authErrors";
 import { auth, firebaseConfigError, googleProvider, isFirebaseConfigured } from "../lib/firebase";
 import { ensureUserProfile, getUserProfile, type UserProfile } from "../lib/firestore";
 
@@ -24,7 +27,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+
+    async function finishRedirectSignIn() {
+      try {
+        await getRedirectResult(auth);
+      } catch (error) {
+        console.warn("Google redirect sign-in failed:", getAuthErrorMessage(error), error);
+      }
+    }
+
+    void finishRedirectSignIn();
+
     const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+      if (!active) return;
       setUser(nextUser);
       if (!nextUser) {
         setProfile(null);
@@ -35,20 +51,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         await ensureUserProfile(nextUser);
         const nextProfile = await getUserProfile(nextUser.uid);
-        setProfile(nextProfile);
+        if (active) setProfile(nextProfile);
       } catch (error) {
-        // Keep auth session usable even if Firestore rules are not published yet.
         console.warn("User profile sync failed. Check Firestore rules deployment.", error);
-        setProfile({
-          name: nextUser.displayName ?? "",
-          email: nextUser.email ?? "",
-          photoURL: nextUser.photoURL ?? "",
-        });
+        if (active) {
+          setProfile({
+            name: nextUser.displayName ?? "",
+            email: nextUser.email ?? "",
+            photoURL: nextUser.photoURL ?? "",
+          });
+        }
       }
-      setLoading(false);
+      if (active) setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -60,7 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!isFirebaseConfigured) {
           throw new Error(firebaseConfigError ?? "Firebase config is incomplete.");
         }
-        await signInWithPopup(auth, googleProvider);
+        try {
+          await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+          if (shouldUseRedirectSignIn(error)) {
+            await signInWithRedirect(auth, googleProvider);
+            return;
+          }
+          throw new Error(getAuthErrorMessage(error));
+        }
       },
       logout: async () => {
         await signOut(auth);
