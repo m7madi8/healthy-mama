@@ -45,5 +45,13 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow read, write: if false;
     }
+
+    match /giftLeads/{leadId} {
+      allow read, write: if false;
+    }
+
+    match /giftLeadRate/{rateId} {
+      allow read, write: if false;
+    }
   }
 }

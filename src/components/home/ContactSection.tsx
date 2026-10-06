@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { getContactFormAction, getWhatsappUrl } from "../../lib/env";
 import { MotionFade } from "../ui/MotionFade";
+import { SectionEyebrow } from "../ui/SectionEyebrow";
 import { btnSecondary } from "../ui/PrimaryButton";
 
 export function ContactSection() {
@@ -53,7 +54,7 @@ export function ContactSection() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <MotionFade variant="fade-down">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-sage-500">التواصل</p>
+            <SectionEyebrow>التواصل</SectionEyebrow>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">
               نحن بجانبك
             </h2>

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { PageViewPing } from "./components/analytics/PageViewPing";
+import { WelcomeNotification } from "./components/auth/WelcomeNotification";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { RequirePurchase } from "./components/auth/RequirePurchase";
 import { PublicLayout } from "./components/layout/PublicLayout";
@@ -14,6 +15,7 @@ import { QuizPage } from "./pages/QuizPage";
 import { ReaderPage } from "./pages/ReaderPage";
 import { ThankYouPage } from "./pages/ThankYouPage";
 import { BookPreviewPage } from "./pages/BookPreviewPage";
+import { DevUiPage } from "./pages/DevUiPage";
 
 export default function App() {
   useEffect(() => {
@@ -24,6 +26,7 @@ export default function App() {
   return (
     <>
       <PageViewPing />
+      <WelcomeNotification />
     <Routes>
       <Route path="quiz" element={<QuizLayout />}>
         <Route index element={<QuizPage />} />
@@ -32,6 +35,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="books/:slug" element={<BookPage />} />
         {import.meta.env.DEV ? <Route path="preview/:bookId" element={<BookPreviewPage />} /> : null}
+        {import.meta.env.DEV ? <Route path="dev/ui" element={<DevUiPage />} /> : null}
         <Route path="thank-you" element={<ThankYouPage />} />
         <Route
           path="dashboard"

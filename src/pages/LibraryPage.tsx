@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { DirectionHint } from "../components/ui/DirectionHint";
 import { Seo } from "../components/layout/Seo";
 import { LibraryCard } from "../components/library/LibraryCard";
 import { useAuth } from "../hooks/useAuth";
@@ -22,7 +23,10 @@ export function LibraryPage() {
               to="/dashboard"
               className="shrink-0 text-sm font-semibold text-sage-600 underline-offset-4 hover:text-sage-900 hover:underline"
             >
-              ← لوحة الحساب
+              <span className="inline-flex items-center gap-1.5">
+                <DirectionHint direction="back" />
+                لوحة الحساب
+              </span>
             </Link>
           </div>
 

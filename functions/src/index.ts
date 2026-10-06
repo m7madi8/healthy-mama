@@ -218,6 +218,27 @@ const ownerCallableCors: Array<string | RegExp> = [
   /^https:\/\/[a-zA-Z0-9.-]+\.web\.app$/,
 ];
 
+function isAllowedCorsOrigin(origin: string | undefined): boolean {
+  if (!origin) return false;
+  return ownerCallableCors.some((pattern) =>
+    typeof pattern === "string" ? pattern === origin : pattern.test(origin),
+  );
+}
+
+function setPublicCorsHeaders(
+  req: { headers: Record<string, unknown> },
+  res: { setHeader: (name: string, value: string) => void },
+): void {
+  const origin = req.headers.origin;
+  if (typeof origin === "string" && isAllowedCorsOrigin(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "3600");
+}
+
 /** invoker: public يسمح بـ OPTIONS من المتصفح قبل تنفيذ الدالة. */
 const ownerFnOpts = {
   region: "us-central1" as const,
@@ -248,24 +269,28 @@ export const recordPageView = onCall(ownerFnOpts, async () => {
   }
 });
 
-/** نفس العداد عبر HTTP + cors:true — يعمل من Vercel بدون مشكلة preflight للـ callable. */
-export const recordPageViewHttp = onRequest({ region: "us-central1", cors: true }, async (req, res) => {
-  if (req.method === "OPTIONS") {
-    res.status(204).send("");
-    return;
-  }
-  if (req.method !== "POST") {
-    res.status(405).json({ ok: false, message: "POST only" });
-    return;
-  }
-  try {
-    await incrementPageView();
-    res.status(200).json({ ok: true });
-  } catch (error) {
-    logger.error("recordPageViewHttp error", error);
-    res.status(500).json({ ok: false });
-  }
-});
+/** نفس العداد عبر HTTP — CORS صريح لـ localhost و Vercel. */
+export const recordPageViewHttp = onRequest(
+  { region: "us-central1", cors: ownerCallableCors, invoker: "public" },
+  async (req, res) => {
+    setPublicCorsHeaders(req, res);
+    if (req.method === "OPTIONS") {
+      res.status(204).send("");
+      return;
+    }
+    if (req.method !== "POST") {
+      res.status(405).json({ ok: false, message: "POST only" });
+      return;
+    }
+    try {
+      await incrementPageView();
+      res.status(200).json({ ok: true });
+    } catch (error) {
+      logger.error("recordPageViewHttp error", error);
+      res.status(500).json({ ok: false });
+    }
+  },
+);
 
 /** Aggregated metrics for the store owner (Firestore + Auth). */
 export const getOwnerDashboard = onCall(ownerFnOpts, async (request) => {
@@ -387,3 +412,64 @@ export const getOwnerDashboard = onCall(ownerFnOpts, async (request) => {
     throw new HttpsError("internal", "تعذر تحميل بيانات لوحة المالك.");
   }
 });
+
+function clientIp(req: { ip?: string; headers: Record<string, unknown> }): string {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.length > 0) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.ip || "unknown";
+}
+
+export const submitGiftLead = onRequest(
+  { region: "us-central1", cors: ownerCallableCors, invoker: "public" },
+  async (req, res) => {
+  setPublicCorsHeaders(req, res);
+  if (req.method === "OPTIONS") {
+    res.status(204).send("");
+    return;
+  }
+  if (req.method !== "POST") {
+    res.status(405).json({ ok: false });
+    return;
+  }
+
+  const website = typeof req.body?.website === "string" ? req.body.website : "";
+  if (website.trim().length > 0) {
+    res.status(200).json({ ok: true });
+    return;
+  }
+
+  const contact = typeof req.body?.contact === "string" ? req.body.contact.trim() : "";
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+  const phoneOk = /^[+0-9][0-9\s-]{6,}$/.test(contact);
+  if (contact.length < 5 || contact.length > 120 || (!emailOk && !phoneOk)) {
+    res.status(400).json({ ok: false, message: "invalid" });
+    return;
+  }
+
+  const ip = clientIp(req);
+  const hourBucket = Math.floor(Date.now() / (60 * 60 * 1000));
+  const rateId = `${ip}:${hourBucket}`;
+  const rateRef = db.collection("giftLeadRate").doc(rateId.replace(/[/#]/g, "_").slice(0, 400));
+
+  try {
+    const rateSnap = await rateRef.get();
+    const count = rateSnap.exists ? Number(rateSnap.data()?.count ?? 0) : 0;
+    if (count >= 5) {
+      res.status(429).json({ ok: false });
+      return;
+    }
+    await rateRef.set({ count: count + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection("giftLeads").add({
+      contact,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      source: "gift-guide",
+    });
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    logger.error("submitGiftLead error", error);
+    res.status(500).json({ ok: false });
+  }
+  },
+);

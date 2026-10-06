@@ -73,3 +73,13 @@ export function getRecordPageViewUrl(): string | undefined {
   if (!projectId) return undefined;
   return `https://${region}-${projectId}.cloudfunctions.net/recordPageViewHttp`;
 }
+
+/** حفظ طلب الدليل المجاني — HTTP + CORS (بعد نشر submitGiftLead). */
+export function getGiftLeadUrl(): string | undefined {
+  const explicit = import.meta.env.VITE_GIFT_LEAD_URL;
+  if (explicit && explicit.trim().length > 0) return explicit.trim();
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+  const region = import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION ?? "us-central1";
+  if (!projectId) return undefined;
+  return `https://${region}-${projectId}.cloudfunctions.net/submitGiftLead`;
+}

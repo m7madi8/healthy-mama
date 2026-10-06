@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Seo } from "../components/layout/Seo";
 import { BookReader } from "../components/reader/BookReader";
-import { getBookById, isBookId } from "../data/books";
+import { getBookById, isBookId, type BookId } from "../data/books";
+import { getLocalBookPages } from "../data/bookLocalPages";
 import { getBookToc } from "../data/book-postnatal-toc";
 import { getBookPages, type ReaderPageChunk } from "../lib/firestore";
 
@@ -10,14 +11,25 @@ export function ReaderPage() {
   const { bookId } = useParams<{ bookId: string }>();
   const [pages, setPages] = useState<ReaderPageChunk[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     async function loadPages() {
       if (!bookId || !isBookId(bookId)) {
         setLoading(false);
         return;
       }
-      const data = await getBookPages(bookId);
+
+      let data: ReaderPageChunk[] = [];
+      try {
+        data = await getBookPages(bookId);
+      } catch (error) {
+        console.warn("Firestore book pages load failed:", error);
+      }
+
+      if (data.length === 0) {
+        const local = getLocalBookPages(bookId as BookId);
+        if (local?.length) data = local;
+      }
+
       setPages(data);
       setLoading(false);
     }
@@ -47,6 +59,13 @@ export function ReaderPage() {
           </div>
           {loading ? (
             <p className="text-sm text-sage-600">جاري تحميل محتوى الكتاب...</p>
+          ) : pages.length === 0 ? (
+            <section className="rounded-3xl border border-sage-100 bg-white p-8 text-center shadow-soft">
+              <p className="font-medium text-moss-900">محتوى الكتاب غير متوفر بعد</p>
+              <p className="mt-2 text-sm text-sage-600">
+                نجهّز صفحات هذا الدليل. عودي بعد قليل أو تواصلي معنا إن استمرّت المشكلة.
+              </p>
+            </section>
           ) : (
             <BookReader pages={pages} toc={getBookToc(bookId)} bookId={bookId} />
           )}

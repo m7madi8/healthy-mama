@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useRef, useState } from "react";
 import { MotionFade } from "../ui/MotionFade";
+import { SectionEyebrow } from "../ui/SectionEyebrow";
 
 export function AboutSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -32,16 +33,20 @@ export function AboutSection() {
               >
                 <video
                   ref={videoRef}
-                  className="aspect-[3/4] w-full object-cover"
+                  className="aspect-[3/4] w-full object-cover object-[center_20%]"
                   autoPlay
                   muted
                   loop
                   playsInline
-                  poster="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=85"
-                  aria-label="فيديو تعريفي — نوال عمر"
+                  poster="/healthymama.jpg"
+                  aria-label="نوال عمر، ممرضة ومدربة يوغا، في فيديو تعريفي"
                 >
                   <source src="/nawal_aom1.mp4" type="video/mp4" />
                 </video>
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-moss-900/35 via-sage-800/10 to-transparent"
+                  aria-hidden
+                />
                 <button
                   type="button"
                   onClick={toggleSound}
@@ -64,7 +69,7 @@ export function AboutSection() {
           </MotionFade>
 
           <MotionFade delay={0.1} variant="fade-up">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-sage-500">من أنا</p>
+            <SectionEyebrow>من أنا</SectionEyebrow>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">نوال عمر</h2>
             <p className="mt-2 text-lg font-medium text-sage-600">ممرضة ومدربة يوغا متخصصة في صحة المرأة والحمل</p>
             <p className="mt-6 leading-relaxed text-sage-700">

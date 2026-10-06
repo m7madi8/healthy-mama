@@ -49,7 +49,7 @@ export function ThankYouPage() {
           )}
           <p className="mt-6 text-sm text-sage-600">
             لأي استفسار تواصلي عبر{" "}
-            <Link to="/#contact" className="font-semibold text-sage-700 underline-offset-2 hover:underline">
+            <Link to="/#gift" className="font-semibold text-sage-700 underline-offset-2 hover:underline">
               صفحة التواصل
             </Link>
             .

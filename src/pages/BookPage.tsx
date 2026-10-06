@@ -1,12 +1,15 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { BookCover } from "../components/book/BookCover";
 import { PayPalCheckout } from "../components/book/PayPalCheckout";
 import { Seo } from "../components/layout/Seo";
 import { useAuth } from "../hooks/useAuth";
 import { getDiscountCode, getDiscountPercent } from "../lib/env";
 import { claimFreeBookWithCode } from "../lib/firestore";
 import { LinkButton } from "../components/ui/PrimaryButton";
+import { DirectionHint } from "../components/ui/DirectionHint";
+import { SectionEyebrow } from "../components/ui/SectionEyebrow";
 import { scrollTransition, scrollViewport } from "../components/ui/motionPresets";
 import { getBookBySlug } from "../data/books";
 
@@ -87,10 +90,13 @@ export function BookPage() {
       <main className="min-h-screen bg-milk pb-20 pt-24" id="main">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Link
-            to="/#quiz-results"
+            to="/#books"
             className="text-sm font-medium text-sage-600 transition-colors hover:text-sage-800"
           >
-            ← كل الأدلة
+            <span className="inline-flex items-center gap-1.5">
+              <DirectionHint direction="back" />
+              كل الأدلة
+            </span>
           </Link>
 
           <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
@@ -101,14 +107,8 @@ export function BookPage() {
               viewport={scrollViewport}
               transition={reduce ? { duration: 0 } : { ...scrollTransition }}
             >
-              <div className="overflow-hidden rounded-[2rem] border border-white/80 bg-petal shadow-lift ring-1 ring-sage-100/60">
-                <img
-                  src={book.coverSrc}
-                  alt=""
-                  className="w-full object-cover"
-                  width={400}
-                  height={560}
-                />
+              <div className="overflow-hidden rounded-[2rem] border border-white/80 bg-mist shadow-lift ring-1 ring-sage-100/60">
+                <BookCover book={book} size="portrait" className="aspect-[4/5] max-h-[32rem]" />
               </div>
             </motion.div>
 
@@ -118,7 +118,7 @@ export function BookPage() {
               viewport={scrollViewport}
               transition={reduce ? { duration: 0 } : { ...scrollTransition, delay: 0.1 }}
             >
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sage-500">دليل رقمي</p>
+              <SectionEyebrow>دليل رقمي</SectionEyebrow>
               <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">
                 {book.title}
               </h1>

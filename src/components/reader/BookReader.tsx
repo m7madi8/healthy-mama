@@ -3,6 +3,7 @@ import type { BookTocEntry } from "../../data/book-postnatal-toc";
 import { getChapterForPage, getPageShortHeading } from "../../data/book-postnatal-toc";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import type { ReaderPageChunk } from "../../lib/firestore";
+import { SectionEyebrow } from "../ui/SectionEyebrow";
 import { BookPageContent } from "./BookPageContent";
 import { BookToc } from "./BookToc";
 
@@ -90,16 +91,9 @@ export function BookReader({ pages, toc, bookId = "book-postnatal" }: BookReader
               : "bg-gradient-to-b from-white via-white to-mist/30 px-5 py-8 sm:px-10 sm:py-10")
         }
       >
-        {!isCoverPage && (
-          <div
-            className="pointer-events-none absolute -start-16 -top-16 h-40 w-40 rounded-full bg-sage-200/25 blur-3xl"
-            aria-hidden
-          />
-        )}
-
         {isCoverPage ? (
           <div className="relative space-y-4">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-sage-500">دليل إلكتروني توعوي</p>
+            <SectionEyebrow align="center">دليل إلكتروني توعوي</SectionEyebrow>
             <h2 className="font-display text-3xl font-semibold leading-tight text-moss-900 sm:text-4xl">
               الاكتئاب بعد الولادة
             </h2>
@@ -117,9 +111,7 @@ export function BookReader({ pages, toc, bookId = "book-postnatal" }: BookReader
             {displayHeading && !isTocPage && (
               <header className="relative mb-8 border-b border-sage-100/80 pb-5">
                 {chapter ? (
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-sage-500">
-                    الفصل {chapter.chapter}
-                  </p>
+                  <SectionEyebrow className="mb-2">الفصل {chapter.chapter}</SectionEyebrow>
                 ) : null}
                 <h2 className="font-display text-2xl font-semibold leading-snug text-moss-900 sm:text-[1.65rem]">
                   {displayHeading}

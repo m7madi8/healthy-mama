@@ -1,67 +1,58 @@
-import { motion, useReducedMotion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { QUIZ_CONFIG, type QuizKey } from "../../data/quizConfig";
-import { MotionFade } from "../ui/MotionFade";
-import { MotionStagger, MotionStaggerItem } from "../ui/MotionStagger";
+import { quizzes } from "../../data/content.ar";
+import { trackEvent } from "../../lib/analytics";
+import { SectionInner } from "../editorial/SectionInner";
+import { EditorialLinkButton } from "../ui/EditorialButton";
 
-const cards: { key: QuizKey; hint: string }[] = [
-  {
-    key: "postnatal",
-    hint: "مقياس إدنبرة — لتقييم المزاج بعد الولادة",
-  },
-  {
-    key: "prep",
-    hint: "٢٠ سؤالًا عن الاستعداد الجسدي والنمط اليومي",
-  },
-  {
-    key: "pregnancy",
-    hint: "٢٠ سؤالًا عن أعراض الحمل والعناية اليومية",
-  },
-];
+const cardTones = ["bg-saffron", "bg-sage", "bg-peach"] as const;
 
 export function QuizSection() {
-  const reduce = useReducedMotion();
   return (
-    <section id="quiz-section" className="scroll-mt-24 py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <MotionFade variant="gentle-zoom">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.15em] text-sage-500">الاستبيانات</p>
-          <h2 className="mt-3 text-center font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">
-            اختاري الموضوع الذي يهمّك الآن
+    <section id={quizzes.id} className="relative scroll-mt-24 bg-forest py-14 md:py-20" data-thread-anchor="quizzes">
+      <SectionInner>
+        <div className="max-w-2xl">
+          <h2 className="font-display text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] text-cream">
+            {quizzes.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-sage-600">
-            أسئلة بالعربية، ونتيجة واضحة مع توصية بكتاب يناسب إجاباتك.
-          </p>
-        </MotionFade>
+          <p className="mt-3 text-lg text-cream/80">{quizzes.intro}</p>
+        </div>
 
-        <MotionStagger className="mt-14 grid gap-6 md:grid-cols-3" stagger={0.1} delayChildren={0.05}>
-          {cards.map((c) => {
-            const cfg = QUIZ_CONFIG[c.key];
-            return (
-              <MotionStaggerItem key={c.key}>
-                <motion.div
-                  whileHover={reduce ? undefined : { y: -6 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                >
-                  <Link
-                    to={`/quiz?type=${c.key}`}
-                    className="group flex h-full flex-col rounded-3xl border border-sage-100 bg-white p-8 shadow-soft transition-all duration-300 hover:border-sage-200 hover:shadow-lift"
-                  >
-                    <span className="text-xs font-bold tracking-wide text-sage-500">{c.hint}</span>
-                    <h3 className="mt-4 font-display text-xl font-semibold text-moss-900 group-hover:text-sage-700">
-                      {cfg.title}
-                    </h3>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sage-600 transition-all group-hover:gap-3 group-hover:text-sage-800">
-                      ابدئي الاستبيان
-                      <span aria-hidden>←</span>
-                    </span>
-                  </Link>
-                </motion.div>
-              </MotionStaggerItem>
-            );
-          })}
-        </MotionStagger>
-      </div>
+        <ul className="mt-10 flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-5">
+          {quizzes.items.map((item, i) => (
+            <li key={item.key}>
+              <article
+                className={`flex h-full flex-col overflow-hidden rounded-2xl border-2 border-ink shadow-hard ${cardTones[i % cardTones.length]}`}
+              >
+                <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-ink bg-cream">
+                  <img
+                    src={item.imageSrc}
+                    alt={item.imageAlt}
+                    className="h-full w-full object-cover object-center"
+                    loading="lazy"
+                    width={800}
+                    height={500}
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-5 md:p-6">
+                  <p className="text-sm font-medium text-ink/70">{item.hint}</p>
+                  <h3 className="mt-2 font-display text-2xl leading-tight text-ink md:text-[1.65rem]">
+                    {item.title}
+                  </h3>
+                  <div className="mt-5">
+                    <EditorialLinkButton
+                      to={`/quiz?type=${item.key}`}
+                      variant="primary"
+                      className="w-full justify-center !text-base"
+                      onClick={() => trackEvent("start_quiz", { quiz: item.key })}
+                    >
+                      ابدئي
+                    </EditorialLinkButton>
+                  </div>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </SectionInner>
     </section>
   );
 }

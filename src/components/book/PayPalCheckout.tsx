@@ -1,4 +1,5 @@
 import type { Book } from "../../data/books";
+import { trackEvent } from "../../lib/analytics";
 import { getAppUrl } from "../../lib/env";
 import { buildPaypalFields, getPaypalFormAction, isPaypalConfigured } from "../../lib/paypal";
 
@@ -27,8 +28,7 @@ export function PayPalCheckout({ book, uid, amount }: PayPalCheckoutProps) {
   if (!configured) {
     return (
       <p className="rounded-xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm text-amber-900">
-        لتفعيل الدفع، أضيفي <code className="rounded bg-white/80 px-1">VITE_PAYPAL_BUSINESS</code> في ملف{" "}
-        <code className="rounded bg-white/80 px-1">.env</code>.
+        الدفع الإلكتروني غير متاح مؤقتًا. تواصلي معنا عبر واتساب لإتمام الطلب.
       </p>
     );
   }
@@ -40,7 +40,8 @@ export function PayPalCheckout({ book, uid, amount }: PayPalCheckoutProps) {
       ))}
       <button
         type="submit"
-        className="w-full rounded-pill bg-sage-600 py-4 text-sm font-semibold text-white shadow-lift transition-all hover:-translate-y-0.5 hover:bg-sage-500"
+        className="min-h-12 w-full rounded-pill bg-ink py-4 text-lg font-semibold text-cream"
+        onClick={() => trackEvent("click_buy", { book: book.id, via: "paypal" })}
       >
         ادفعي عبر PayPal أو البطاقة — {amount} ₪
       </button>

@@ -1,7 +1,8 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { WELLNESS_TIPS, type WellnessTipCategory } from "../../data/wellnessTips";
 import { MotionFade } from "../ui/MotionFade";
+import { SectionEyebrow } from "../ui/SectionEyebrow";
 
 const ROTATE_MS = 5 * 60 * 1000;
 
@@ -34,45 +35,26 @@ export function WellnessTipsSection() {
   const reduce = useReducedMotion();
   const len = WELLNESS_TIPS.length;
   const [index, setIndex] = useState(() => initialIndex(len));
-  const cycleStartRef = useRef(Date.now());
-  const [, tick] = useReducer((n) => n + 1, 0);
+  const [cycle, setCycle] = useState(0);
 
   const advance = useCallback(() => {
     setIndex((prev) => pickNextIndex(prev, len));
-    cycleStartRef.current = Date.now();
+    setCycle((c) => c + 1);
   }, [len]);
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      const now = Date.now();
-      if (now - cycleStartRef.current >= ROTATE_MS) {
-        setIndex((prev) => pickNextIndex(prev, len));
-        cycleStartRef.current = now;
-      }
-      tick();
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [len]);
-
-  const progress = useMemo(() => {
-    const elapsed = Date.now() - cycleStartRef.current;
-    return Math.min(100, Math.max(0, (elapsed / ROTATE_MS) * 100));
-  }, [tick]);
-
-  const remainingSec = useMemo(() => {
-    const elapsed = Date.now() - cycleStartRef.current;
-    return Math.max(0, Math.ceil((ROTATE_MS - elapsed) / 1000));
-  }, [tick]);
+    const id = window.setTimeout(advance, ROTATE_MS);
+    return () => window.clearTimeout(id);
+  }, [advance, cycle]);
 
   const tip = WELLNESS_TIPS[index];
-  const minutesLeft = Math.ceil(remainingSec / 60);
 
   return (
     <section id="wellness-tips" className="scroll-mt-24 py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10 lg:items-start">
           <MotionFade className="lg:col-span-5" variant="gentle-zoom">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-sage-500">معلومات مفيدة</p>
+            <SectionEyebrow>معلومات مفيدة</SectionEyebrow>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">
               نصائح ومقاطع سريعة لرحلتك
             </h2>
@@ -97,7 +79,7 @@ export function WellnessTipsSection() {
             </ul>
 
             <div className="mt-10">
-              <p className="text-xs font-semibold uppercase tracking-wider text-sage-500">مجالات التغطية</p>
+              <SectionEyebrow>مجالات التغطية</SectionEyebrow>
               <div className="mt-3 flex flex-wrap gap-2">
                 {categoryOrder.map((c) => (
                   <span
@@ -113,15 +95,11 @@ export function WellnessTipsSection() {
 
           <div className="lg:col-span-7">
             <MotionFade delay={0.08} variant="fade-up">
-              <div className="relative overflow-hidden rounded-[2rem] border border-sage-100/90 bg-gradient-to-br from-white via-milk to-mist/60 p-8 shadow-lift ring-1 ring-sage-100/40 sm:p-10">
-                <div
-                  className="pointer-events-none absolute -start-24 -top-24 h-64 w-64 rounded-full bg-sage-200/25 blur-3xl"
-                  aria-hidden
-                />
-                <div className="relative">
+              <div className="rounded-[2rem] border border-sage-100/90 bg-gradient-to-br from-white via-milk to-mist/60 p-8 shadow-lift ring-1 ring-sage-100/40 sm:p-10">
+                <div>
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <p className="text-xs font-semibold text-sage-500">
-                      التحديث التلقائي خلال حوالي {minutesLeft} دقيقة
+                      التحديث التلقائي خلال حوالي ٥ دقائق
                     </p>
                     <button
                       type="button"
@@ -135,16 +113,14 @@ export function WellnessTipsSection() {
                   <div
                     className="mt-4 h-1.5 overflow-hidden rounded-full bg-sage-100"
                     role="progressbar"
-                    aria-valuenow={Math.round(progress)}
                     aria-valuemin={0}
                     aria-valuemax={100}
+                    aria-valuetext="خمس دقائق حتى النصيحة التالية"
                     aria-label="الوقت حتى النصيحة التالية"
                   >
-                    <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-sage-400 to-sage-600"
-                      initial={false}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: reduce ? 0 : 0.35 }}
+                    <div
+                      key={cycle}
+                      className="wellness-progress-bar h-full w-full rounded-full bg-gradient-to-r from-sage-400 to-sage-600"
                     />
                   </div>
 

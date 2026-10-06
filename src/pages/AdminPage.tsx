@@ -1,8 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { BookCover } from "../components/book/BookCover";
 import { Seo } from "../components/layout/Seo";
 import { Button } from "../components/ui/PrimaryButton";
+import { DirectionHint } from "../components/ui/DirectionHint";
+import { SectionEyebrow } from "../components/ui/SectionEyebrow";
 import { ProfileAvatarPlaceholder } from "../components/ui/ProfileAvatarPlaceholder";
 import { BOOKS } from "../data/books";
 import { useAuth } from "../hooks/useAuth";
@@ -52,7 +55,7 @@ function StatCard({
     <div
       className={`relative overflow-hidden rounded-2xl border border-sage-100/90 bg-white/95 p-5 shadow-soft ring-1 ${ring} backdrop-blur-sm`}
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage-500">{label}</p>
+      <SectionEyebrow>{label}</SectionEyebrow>
       <p className="mt-2 font-display text-3xl font-semibold tabular-nums text-moss-900">{value}</p>
       {hint ? <p className="mt-2 text-xs leading-relaxed text-sage-600">{hint}</p> : null}
     </div>
@@ -148,7 +151,10 @@ export function AdminPage() {
             <h1 className="font-display text-xl font-semibold text-moss-900">Firebase غير مضبوط</h1>
             <p className="mt-3 text-sm text-sage-600">{firebaseConfigError}</p>
             <Link to="/" className="mt-6 inline-block text-sm font-semibold text-sage-600 hover:text-sage-800">
-              ← العودة للرئيسية
+              <span className="inline-flex items-center gap-1.5">
+                <DirectionHint direction="back" />
+                العودة للرئيسية
+              </span>
             </Link>
           </div>
         </div>
@@ -175,14 +181,17 @@ export function AdminPage() {
         <div className="min-h-screen bg-gradient-to-b from-milk via-white to-sage-50/30 px-4 py-16">
           <div className="mx-auto max-w-md">
             <Link to="/" className="text-sm font-medium text-sage-600 hover:text-sage-900">
-              ← العودة للرئيسية
+              <span className="inline-flex items-center gap-1.5">
+                <DirectionHint direction="back" />
+                العودة للرئيسية
+              </span>
             </Link>
             <motion.div
               initial={reduce ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-10 overflow-hidden rounded-[1.75rem] border border-sage-100/90 bg-white p-8 shadow-lift ring-1 ring-sage-100/40"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-500">لوحة المالك</p>
+              <SectionEyebrow>لوحة المالك</SectionEyebrow>
               <h1 className="mt-3 font-display text-2xl font-semibold text-moss-900">دخول آمن عبر Google</h1>
               <p className="mt-3 text-sm leading-relaxed text-sage-600">
                 تظهر الأرقام الحقيقية من Firestore وFirebase Auth. يجب أن يكون معرّف حسابك مضافًا إلى{" "}
@@ -218,7 +227,10 @@ export function AdminPage() {
         <div className="min-h-screen bg-gradient-to-b from-milk to-mist/40 px-4 py-16">
           <div className="mx-auto max-w-lg">
             <Link to="/" className="text-sm font-medium text-sage-600 hover:text-sage-900">
-              ← العودة للرئيسية
+              <span className="inline-flex items-center gap-1.5">
+                <DirectionHint direction="back" />
+                العودة للرئيسية
+              </span>
             </Link>
             <div className="mt-8 rounded-[1.75rem] border border-amber-200/80 bg-white p-8 shadow-soft">
               <h1 className="font-display text-xl font-semibold text-moss-900">
@@ -311,7 +323,10 @@ export function AdminPage() {
             className="rounded-lg px-3 py-2 text-center text-sm font-medium text-sage-600 hover:bg-sage-50"
             onClick={onPick}
           >
-            ← الموقع العام
+            <span className="inline-flex items-center gap-1.5">
+              <DirectionHint direction="back" />
+              الموقع العام
+            </span>
           </Link>
           <button
             type="button"
@@ -522,13 +537,7 @@ export function AdminPage() {
                               <tr key={b.id} className="border-b border-sage-50 last:border-0">
                                 <td className="px-4 py-4">
                                   <div className="flex items-center gap-3">
-                                    <img
-                                      src={b.coverSrc}
-                                      alt=""
-                                      width={40}
-                                      height={56}
-                                      className="rounded-lg object-cover shadow-sm ring-1 ring-sage-100"
-                                    />
+                                    <BookCover book={b} size="thumb" className="shrink-0 rounded-lg shadow-sm" />
                                     <span className="font-medium text-moss-900">{b.shortTitle || b.title}</span>
                                   </div>
                                 </td>

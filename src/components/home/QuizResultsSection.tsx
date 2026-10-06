@@ -3,7 +3,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { QUIZ_CONFIG } from "../../data/quizConfig";
 import { BOOKS, type BookId } from "../../data/books";
 import { getRangeForScore, isQuizKey } from "../../lib/quiz";
+import { BookCover } from "../book/BookCover";
 import { MotionFade } from "../ui/MotionFade";
+import { DirectionHint } from "../ui/DirectionHint";
+import { SectionEyebrow } from "../ui/SectionEyebrow";
 import { MotionStagger, MotionStaggerItem } from "../ui/MotionStagger";
 import { scrollEase, scrollViewport } from "../ui/motionPresets";
 
@@ -37,7 +40,7 @@ export function QuizResultsSection() {
     <section id="quiz-results" className="scroll-mt-24 border-t border-sage-100/80 bg-mist/40 py-20 backdrop-blur-[1px] sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <MotionFade variant="fade-down">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.15em] text-sage-500">النتيجة والتوصية</p>
+          <SectionEyebrow align="center">النتيجة والتوصية</SectionEyebrow>
           <h2 className="mt-3 text-center font-display text-3xl font-semibold tracking-tight text-moss-900 sm:text-4xl">
             كتب موصى بها لك
           </h2>
@@ -80,9 +83,7 @@ export function QuizResultsSection() {
                 }`}
                 whileHover={reduce ? undefined : { scale: 1.01 }}
               >
-                <div className="aspect-[10/7] overflow-hidden bg-petal">
-                  <img src={book.coverSrc} alt="" className="h-full w-full object-cover" width={400} height={280} />
-                </div>
+                <BookCover book={book} />
                 <div className="flex flex-1 flex-col p-5">
                   <h4 className="font-display text-base font-semibold leading-snug text-moss-900">{book.title}</h4>
                   <p className="mt-2 flex-1 text-xs leading-relaxed text-sage-600">{book.cardDescription}</p>
@@ -90,7 +91,10 @@ export function QuizResultsSection() {
                     to={`/books/${book.slug}`}
                     className="mt-4 text-sm font-semibold text-sage-600 transition-colors hover:text-sage-800"
                   >
-                    عرض الكتاب ←
+                    <span className="inline-flex items-center gap-1.5">
+                      عرض الكتاب
+                      <DirectionHint direction="forward" />
+                    </span>
                   </Link>
                 </div>
               </motion.article>

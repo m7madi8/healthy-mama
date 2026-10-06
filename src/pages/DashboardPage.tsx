@@ -1,6 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { BookCover } from "../components/book/BookCover";
 import { Seo } from "../components/layout/Seo";
+import { DirectionHint } from "../components/ui/DirectionHint";
+import { SectionEyebrow } from "../components/ui/SectionEyebrow";
 import { ProfileAvatarPlaceholder } from "../components/ui/ProfileAvatarPlaceholder";
 import { scrollTransition, scrollViewport } from "../components/ui/motionPresets";
 import { useAuth } from "../hooks/useAuth";
@@ -36,7 +39,10 @@ export function DashboardPage() {
               to="/"
               className="text-sm font-medium text-sage-600 transition-colors hover:text-sage-900"
             >
-              ← العودة للرئيسية
+              <span className="inline-flex items-center gap-1.5">
+                <DirectionHint direction="back" />
+                العودة للرئيسية
+              </span>
             </Link>
             <button
               type="button"
@@ -51,17 +57,9 @@ export function DashboardPage() {
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : 0.05, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-[2rem] border border-sage-100/90 bg-gradient-to-br from-white via-white to-sage-50/40 p-8 shadow-lift ring-1 ring-sage-100/50 md:p-10"
+            className="rounded-[2rem] border border-sage-100/90 bg-gradient-to-br from-white via-white to-sage-50/40 p-8 shadow-lift ring-1 ring-sage-100/50 md:p-10"
           >
-            <div
-              className="pointer-events-none absolute -start-24 -top-24 h-64 w-64 rounded-full bg-sage-200/25 blur-3xl"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute -bottom-16 -end-16 h-48 w-48 rounded-full bg-mist/80 blur-2xl"
-              aria-hidden
-            />
-            <div className="relative flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
               <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                 {profile?.photoURL ? (
                   <img
@@ -75,9 +73,7 @@ export function DashboardPage() {
                   </div>
                 )}
                 <div className="text-center sm:text-start">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-500">
-                    حسابي
-                  </p>
+                  <SectionEyebrow className="justify-center sm:justify-start">حسابي</SectionEyebrow>
                   <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-moss-900 md:text-4xl">
                     أهلاً، {displayName}
                   </h1>
@@ -97,7 +93,7 @@ export function DashboardPage() {
                   مكتبتي الكاملة
                 </Link>
                 <Link
-                  to="/#quiz-results"
+                  to="/#books"
                   className="inline-flex items-center justify-center rounded-pill border border-sage-200 bg-white/90 px-6 py-3.5 text-sm font-semibold text-sage-800 shadow-soft backdrop-blur-sm transition-all hover:border-sage-300 hover:bg-white"
                 >
                   اكتشفي المزيد من الكتب
@@ -141,17 +137,13 @@ export function DashboardPage() {
                     rel="noopener noreferrer"
                     className="block transition-opacity hover:opacity-90"
                   >
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage-500">
-                      {card.label}
-                    </p>
+                    <SectionEyebrow>{card.label}</SectionEyebrow>
                     <p className="mt-3 font-display text-2xl font-semibold text-moss-900">{card.value}</p>
                     <p className="mt-2 text-sm text-sage-600">{card.hint}</p>
                   </a>
                 ) : (
                   <>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage-500">
-                      {card.label}
-                    </p>
+                    <SectionEyebrow>{card.label}</SectionEyebrow>
                     <p className="mt-3 font-display text-2xl font-semibold text-moss-900">{card.value}</p>
                     <p className="mt-2 text-sm text-sage-600">{card.hint}</p>
                   </>
@@ -200,7 +192,7 @@ export function DashboardPage() {
                   اختاري دليلاً يناسبكِ من صفحة الكتب، أو فعّلي كود الخصم إن كان متاحًا.
                 </p>
                 <Link
-                  to="/#quiz-results"
+                  to="/#books"
                   className="mt-8 inline-flex rounded-pill bg-sage-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lift transition-all hover:bg-sage-500"
                 >
                   تصفحي الكتب
@@ -217,14 +209,7 @@ export function DashboardPage() {
                     transition={{ ...scrollTransition, delay: reduce ? 0 : index * 0.05 }}
                   >
                     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-sage-100/90 bg-white shadow-soft transition-all duration-300 hover:border-sage-200/90 hover:shadow-lift">
-                      <div className="relative aspect-[4/3] overflow-hidden bg-petal">
-                        <img
-                          src={book.coverSrc}
-                          alt=""
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                          loading="lazy"
-                        />
-                      </div>
+                      <BookCover book={book} className="aspect-[4/3]" />
                       <div className="flex flex-1 flex-col p-4">
                         <h3 className="font-display text-base font-semibold leading-snug text-moss-900">
                           {book.shortTitle}

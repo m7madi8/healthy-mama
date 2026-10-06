@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Book } from "../../data/books";
+import { BookCover } from "../book/BookCover";
 
 type LibraryCardProps = {
   book: Book;
@@ -7,8 +8,8 @@ type LibraryCardProps = {
 
 export function LibraryCard({ book }: LibraryCardProps) {
   return (
-    <article className="overflow-hidden rounded-3xl border border-sage-100 bg-white shadow-soft">
-      <img src={book.coverSrc} alt={book.shortTitle} className="h-64 w-full object-cover" loading="lazy" />
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-sage-100 bg-white shadow-soft">
+      <BookCover book={book} className="aspect-[4/3]" />
       <div className="space-y-3 p-5">
         <h2 className="font-display text-xl font-semibold text-moss-900">{book.shortTitle}</h2>
         <p className="line-clamp-2 text-sm leading-relaxed text-sage-700">{book.cardDescription}</p>
